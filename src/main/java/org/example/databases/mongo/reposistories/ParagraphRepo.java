@@ -11,7 +11,7 @@ public interface ParagraphRepo extends MongoRepository<Paragraph, String> {
     <S extends Paragraph> List<S> saveAll(Iterable<S> entities);
 
     @Aggregation(pipeline = {
-            "{ $match: {$text: {$search: '?0', $language: none } } }",
+            "{ $match: {$text: {$search: '?0', $language: vi } } }",
             "{ $sort: { score: { $meta: 'textScore' } } }",
             "{ $limit: 10 }"
     })
