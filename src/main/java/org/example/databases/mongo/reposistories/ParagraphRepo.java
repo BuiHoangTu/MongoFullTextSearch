@@ -12,7 +12,8 @@ public interface ParagraphRepo extends MongoRepository<Paragraph, String> {
 
     @Aggregation(pipeline = {
             "{ $match: {$text: {$search: '?0', $language: none } } }",
-            "{ $sort: { score: { $meta: 'textScore' } } },"
+            "{ $sort: { score: { $meta: 'textScore' } } }",
+            "{ $limit: 10 }"
     })
     List<Paragraph> searchFullText(String text);
 }
