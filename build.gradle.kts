@@ -11,6 +11,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -23,6 +29,13 @@ dependencies {
     // mongoDB
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // lombok
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    // rest api
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }
 
 tasks.test {
