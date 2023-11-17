@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import org.example.models.KeywordCount;
 import org.example.models.Paragraph;
 import org.example.services.OpenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +34,10 @@ public class OpenController {
         OPEN_CONTROLLER_LOG.info(res.toString());
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping(path = "common")
+    public ResponseEntity<List<KeywordCount>> searchKeyText() {
+        return ResponseEntity.ok(service.searchCommonText());
+    }
+
 }

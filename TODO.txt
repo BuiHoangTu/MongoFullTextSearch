@@ -1,0 +1,6 @@
+retrieve common words from db (port counter, countable here), update hourly (the rate is determined later)
+each search request, remove common words before search
+    perform `dis-remove common words` if cant find anything
+    perform regex if cant find anything
+
+each push data, save new words (only counted as one) and update to db word count
