@@ -1,5 +1,6 @@
-retrieve common words from db (port counter, countable here), update hourly (the rate is determined later)
-each search request, remove common words before search
+retrieve common words from db [v]
+    update hourly (the rate is determined later)
+each search request, remove common words before search [v]
     perform `dis-remove common words` if cant find anything
     perform regex if cant find anything
 

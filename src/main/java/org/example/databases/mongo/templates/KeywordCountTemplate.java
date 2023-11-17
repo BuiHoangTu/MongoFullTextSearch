@@ -14,6 +14,7 @@ import java.util.List;
 @Repository
 public class KeywordCountTemplate {
     private static final int COMMON_PERCENTAGE = 50;
+    private static final String COLLECTION = "keywords_count";
 
     private final MongoTemplate mongo;
 
@@ -32,7 +33,7 @@ public class KeywordCountTemplate {
                 Aggregation.limit(commonQuantity)
         );
 
-        AggregationResults<KeywordCount> res = mongo.aggregate(aggregation, "keywords_count", KeywordCount.class);
+        AggregationResults<KeywordCount> res = mongo.aggregate(aggregation, COLLECTION, KeywordCount.class);
 
         return res.getMappedResults();
     }

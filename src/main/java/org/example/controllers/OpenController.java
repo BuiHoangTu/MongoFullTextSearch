@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import org.example.models.KeywordCount;
 import org.example.models.Paragraph;
+import org.example.models.TextWithKeyword;
 import org.example.services.OpenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,4 +41,11 @@ public class OpenController {
         return ResponseEntity.ok(service.searchCommonText());
     }
 
+    @GetMapping(path = "search")
+    public ResponseEntity<List<TextWithKeyword>> searchTextWithKeyword(@RequestParam(value = "keyText") String keyText) {
+        var res = service.searchTextWithKeyword(keyText);
+        OPEN_CONTROLLER_LOG.info("Got keyText:" + keyText);
+        OPEN_CONTROLLER_LOG.info(res.toString());
+        return ResponseEntity.ok(res);
+    }
 }
