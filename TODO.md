@@ -2,7 +2,7 @@
 - [ ] push data
     - [x] retrieve words count from db, add to text before push db     
     - [x] count words (only count one each text) 
-    - [ ] increase word count for every existing document
+    - [x] increase word count for every existing document
 
 
 ### search

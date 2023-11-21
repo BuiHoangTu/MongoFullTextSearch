@@ -4,6 +4,7 @@ import org.example.databases.mongo.reposistories.ParagraphRepo;
 import org.example.databases.mongo.reposistories.TextRepo;
 import org.example.databases.mongo.reposistories.TextWithAllWordCountRepo;
 import org.example.databases.mongo.templates.KeywordCountTemplate;
+import org.example.databases.mongo.templates.TextWithAllWordCountTemplate;
 import org.example.models.*;
 import org.example.utils.counter.StackCounter;
 import org.slf4j.Logger;
@@ -12,23 +13,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OpenService {
     private static final Logger LOGGER_OPEN_SERVICE = LoggerFactory.getLogger(OpenService.class);
     private final ParagraphRepo paragraphRepo;
-    private final KeywordCountTemplate template;
+    private final KeywordCountTemplate keywordCountTemplate;
     private final CommonKeywords commonKeywords;
     private final TextRepo textRepo;
     private final TextWithAllWordCountRepo textWithAllWordCountRepo;
+    private final TextWithAllWordCountTemplate textWithAllWordCountTemplate;
 
     @Autowired
-    public OpenService(ParagraphRepo paragraphRepo, KeywordCountTemplate template, CommonKeywords commonKeywords, TextRepo textRepo, TextWithAllWordCountRepo textWithAllWordCountRepo) {
+    public OpenService(ParagraphRepo paragraphRepo, KeywordCountTemplate keywordCountTemplate, CommonKeywords commonKeywords, TextRepo textRepo, TextWithAllWordCountRepo textWithAllWordCountRepo, TextWithAllWordCountTemplate textWithAllWordCountTemplate) {
         this.paragraphRepo = paragraphRepo;
-        this.template = template;
+        this.keywordCountTemplate = keywordCountTemplate;
         this.commonKeywords = commonKeywords;
         this.textRepo = textRepo;
         this.textWithAllWordCountRepo = textWithAllWordCountRepo;
+        this.textWithAllWordCountTemplate = textWithAllWordCountTemplate;
     }
 
     public List<Paragraph> searchKeyText(String keyText) {
@@ -36,7 +40,7 @@ public class OpenService {
     }
 
     public List<WordCount> searchCommonText() {
-        return template.getCommonWords();
+        return keywordCountTemplate.getCommonWords();
     }
 
     public List<Text> searchTextWithKeyword(String text) {
@@ -108,13 +112,17 @@ public class OpenService {
 
         textWithAllWordCountRepo.insert(textsWithAllWordCount);
 
-        StackCounter<WordCount> wordCounter = new StackCounter<>(listWordCount);
+        StackCounter<WordCount> extraWordCounter = new StackCounter<>(listWordCount);
+
         // count words
         for (var text : texts) {
             Set<String> uniqueWords = new HashSet<>(List.of(text.split(" ")));
 
             // same word in same document is counted only one
-            wordCounter.addAll(uniqueWords.stream().map(word -> new WordCount(null, word, 1)).toList());
+            extraWordCounter.addAll(uniqueWords.stream().map(word -> new WordCount(null, word, 1)).toList());
         }
+
+        // increase word count for every existing document
+        textWithAllWordCountTemplate.increaseWordCount(extraWordCounter.stream().collect(Collectors.toMap(WordCount::getWord, WordCount::getCount)));
     }
 }
