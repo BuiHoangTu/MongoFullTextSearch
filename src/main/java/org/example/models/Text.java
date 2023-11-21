@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document(collection = "with_keywords")
 @AllArgsConstructor
-public class TextWithKeyword {
+public class Text {
     @Id
     private String id;
     @TextIndexed()

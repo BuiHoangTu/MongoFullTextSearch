@@ -1,12 +1,12 @@
 package org.example.services;
 
 import org.example.databases.mongo.reposistories.ParagraphRepo;
-import org.example.databases.mongo.reposistories.TextWithKeywordRepo;
+import org.example.databases.mongo.reposistories.TextRepo;
 import org.example.databases.mongo.templates.KeywordCountTemplate;
 import org.example.models.CommonKeywords;
 import org.example.models.KeywordCount;
 import org.example.models.Paragraph;
-import org.example.models.TextWithKeyword;
+import org.example.models.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +18,10 @@ public class OpenService {
     private final ParagraphRepo paragraphRepo;
     private final KeywordCountTemplate template;
     private final CommonKeywords commonKeywords;
-    private final TextWithKeywordRepo textRepo;
+    private final TextRepo textRepo;
 
     @Autowired
-    public OpenService(ParagraphRepo paragraphRepo, KeywordCountTemplate template, CommonKeywords commonKeywords, TextWithKeywordRepo textRepo) {
+    public OpenService(ParagraphRepo paragraphRepo, KeywordCountTemplate template, CommonKeywords commonKeywords, TextRepo textRepo) {
         this.paragraphRepo = paragraphRepo;
         this.template = template;
         this.commonKeywords = commonKeywords;
@@ -36,7 +36,7 @@ public class OpenService {
         return template.getCommonWords();
     }
 
-    public List<TextWithKeyword> searchTextWithKeyword(String text) {
+    public List<Text> searchTextWithKeyword(String text) {
         // remove every words that is common
         List<String> splitText = new java.util.ArrayList<>(Arrays.stream(text.split(" ")).toList());
         splitText.removeIf(word -> commonKeywords.get(word) != null);
