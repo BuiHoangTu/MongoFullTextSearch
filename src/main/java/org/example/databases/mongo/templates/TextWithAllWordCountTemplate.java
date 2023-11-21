@@ -32,7 +32,7 @@ public class TextWithAllWordCountTemplate {
                     // document has field wordCounts, in which word = input
                     Filters.elemMatch("wordCounts", Filters.eq("word", word)),
                     // increase by count
-                    Updates.inc("wordCounts.$[elem].count", count),
+                    Updates.inc("wordCounts.$[elem].count", count.longValue()),
                     // set option to update all
                     new UpdateOptions().arrayFilters(List.of(Filters.eq("elem.word", word)))
             );
@@ -41,7 +41,7 @@ public class TextWithAllWordCountTemplate {
             if (res.getModifiedCount() == 0) {
                 var wordCountDocument = new Document()
                         .append("word", word)
-                        .append("count", count);
+                        .append("count", count.longValue());
 
                 collection.updateMany(
                         // update all
