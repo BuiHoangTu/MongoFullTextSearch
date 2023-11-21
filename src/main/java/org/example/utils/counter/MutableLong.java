@@ -1,6 +1,6 @@
 package org.example.utils.counter;
 
-public class MutableLong extends Number implements Comparable<Long> {
+public class MutableLong extends Number implements Comparable<Number> {
     private Long value;
 
     public MutableLong(Number value) {
@@ -33,8 +33,8 @@ public class MutableLong extends Number implements Comparable<Long> {
     }
 
     @Override
-    public int compareTo(Long o) {
-        return value.compareTo(o);
+    public int compareTo(Number o) {
+        return value.compareTo(o.longValue());
     }
 
     @Override

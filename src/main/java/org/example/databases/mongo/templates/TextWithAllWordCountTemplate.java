@@ -39,10 +39,14 @@ public class TextWithAllWordCountTemplate {
 
             // if word is not in there (all document is in sync so if it is not in one, it is not in all)
             if (res.getModifiedCount() == 0) {
+                var wordCountDocument = new Document()
+                        .append("word", word)
+                        .append("count", count);
+
                 collection.updateMany(
                         // update all
                         Filters.empty(),
-                        Updates.addToSet("wordCounts", new WordCount(null, word, count.longValue()))
+                        Updates.addToSet("wordCounts", wordCountDocument)
                 );
             }
 
