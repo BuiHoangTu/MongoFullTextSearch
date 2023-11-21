@@ -3,6 +3,7 @@ package org.example.controllers;
 import org.example.models.KeywordCount;
 import org.example.models.Paragraph;
 import org.example.models.Text;
+import org.example.models.TextWithAllWordCount;
 import org.example.services.OpenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class OpenController {
     @GetMapping(path = "search")
     public ResponseEntity<List<Paragraph>> searchKeyText(@RequestParam(value = "keyText") String keyText) {
         var res = service.searchKeyText(keyText);
-        OPEN_CONTROLLER_LOG.info("Got keyText:" + keyText);
+        OPEN_CONTROLLER_LOG.info("search got keyText:" + keyText);
         OPEN_CONTROLLER_LOG.info(res.toString());
         return ResponseEntity.ok(res);
     }
@@ -41,10 +42,18 @@ public class OpenController {
         return ResponseEntity.ok(service.searchCommonText());
     }
 
-    @GetMapping(path = "search")
+    @GetMapping(path = "reduced-search")
     public ResponseEntity<List<Text>> searchTextWithKeyword(@RequestParam(value = "keyText") String keyText) {
         var res = service.searchTextWithKeyword(keyText);
-        OPEN_CONTROLLER_LOG.info("Got keyText:" + keyText);
+        OPEN_CONTROLLER_LOG.info("reduced-search got keyText:" + keyText);
+        OPEN_CONTROLLER_LOG.info(res.toString());
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping(path = "combine-reduced-search")
+    public ResponseEntity<List<TextWithAllWordCount>> searchTextWithWordCount(@RequestParam(value = "keyText") String keyText) {
+        var res = service.searchTextWithAllWordCount(keyText);
+        OPEN_CONTROLLER_LOG.info("combine-reduced-search got keyText:" + keyText);
         OPEN_CONTROLLER_LOG.info(res.toString());
         return ResponseEntity.ok(res);
     }
