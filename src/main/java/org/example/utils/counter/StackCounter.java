@@ -9,6 +9,12 @@ import java.util.*;
 public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     private final Map<T, Countable> counterMap = new HashMap<>();
 
+    public StackCounter() {
+    }
+    public StackCounter(Collection<T> startupCollection) {
+        startupCollection.forEach(this::count);
+    }
+
     @Override
     public Number count(T object) {
         var currentValue = counterMap.get(object);

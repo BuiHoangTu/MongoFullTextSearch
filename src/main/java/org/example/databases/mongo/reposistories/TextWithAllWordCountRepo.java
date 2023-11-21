@@ -35,7 +35,7 @@ public interface TextWithAllWordCountRepo extends MongoRepository<TextWithAllWor
      *
      * @param text  search phrase
      * @param limit maximum result expected
-     * @return best suited texts with the search phrase in descending order.
+     * @return sorted of best suited texts with the search phrase in descending order.
      * @apiNote This method always return results with `keywordCounts = null` to
      * speed up search and reduce memory. To access `keywordCounts`, please use
      * `findFirstWithKeywordCount`

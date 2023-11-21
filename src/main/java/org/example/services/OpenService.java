@@ -5,13 +5,13 @@ import org.example.databases.mongo.reposistories.TextRepo;
 import org.example.databases.mongo.reposistories.TextWithAllWordCountRepo;
 import org.example.databases.mongo.templates.KeywordCountTemplate;
 import org.example.models.*;
+import org.example.utils.counter.StackCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OpenService {
@@ -94,6 +94,27 @@ public class OpenService {
 
 
         // perform search
-        return textWithAllWordCountRepo.searchFullText(text, 10);
+        return textWithAllWordCountRepo.searchFullText(text, MAX_RESULT);
+    }
+
+    public void saveText(List<String> texts) {
+        // retrieve words count from db
+        var listWordCount = textWithAllWordCountRepo.findFirstWithKeywordCount()
+                .orElse(new TextWithAllWordCount(null, null, Collections.emptyList()))
+                .getKeywordCounts();
+
+        // add to text before push db
+        List<TextWithAllWordCount> textsWithAllWordCount = texts.stream().map(text -> new TextWithAllWordCount(null, text, listWordCount)).toList();
+
+        textWithAllWordCountRepo.insert(textsWithAllWordCount);
+
+        StackCounter<KeywordCount> wordCounter = new StackCounter<>(listWordCount);
+        // count words
+        for (var text : texts) {
+            Set<String> uniqueWords = new HashSet<>(List.of(text.split(" ")));
+
+            // same word in same document is counted only one
+            wordCounter.addAll(uniqueWords.stream().map(word -> new KeywordCount(null, word, 1)).toList());
+        }
     }
 }

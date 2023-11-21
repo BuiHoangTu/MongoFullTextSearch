@@ -1,7 +1,7 @@
 ### insert
 - [ ] push data
-    - [ ] retrieve words count from db, add to text before push db     
-    - [ ] count new words (only count one each text) 
+    - [x] retrieve words count from db, add to text before push db     
+    - [x] count words (only count one each text) 
     - [ ] increase word count for every existing document
 
 

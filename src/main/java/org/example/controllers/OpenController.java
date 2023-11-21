@@ -7,10 +7,7 @@ import org.example.models.TextWithAllWordCount;
 import org.example.services.OpenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,5 +53,12 @@ public class OpenController {
         OPEN_CONTROLLER_LOG.info("combine-reduced-search got keyText:" + keyText);
         OPEN_CONTROLLER_LOG.info(res.toString());
         return ResponseEntity.ok(res);
+    }
+
+    @PostMapping(path = "save-text")
+    public ResponseEntity<?> saveText(@RequestBody List<String> texts) {
+        service.saveText(texts);
+
+        return ResponseEntity.accepted().build();
     }
 }
