@@ -1,5 +1,7 @@
 package org.example.utils.counter;
 
+import lombok.NonNull;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,16 +93,19 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
     }
 
     @Override
+    @NonNull
     public Set<T> keySet() {
         return counterMap.keySet();
     }
 
     @Override
+    @NonNull
     public Collection< Number> values() {
         return new ArrayList<>(counterMap.values());
     }
 
     @Override
+    @NonNull
     public Set<Entry<T, Number>> entrySet() {
         return counterMap.entrySet().stream().map((mutableEntry) -> new Entry<T, Number>() {
             @Override
@@ -119,6 +124,7 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
             }
 
             @Override
+            @SuppressWarnings("all")
             public boolean equals(Object o) {
                 return mutableEntry.equals(o);
             }
@@ -128,5 +134,10 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
                 return mutableEntry.hashCode();
             }
         }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String toString() {
+        return counterMap.toString();
     }
 }

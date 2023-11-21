@@ -55,6 +55,6 @@ public class MutableLong extends Number implements Comparable<Long> {
 
     @Override
     public String toString() {
-        return super.toString();
+        return String.valueOf(value);
     }
 }
