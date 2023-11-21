@@ -3,8 +3,8 @@ package org.example.utils.counter;
 public class MutableLong extends Number implements Comparable<Long> {
     private Long value;
 
-    public MutableLong(Long value) {
-        this.value = value;
+    public MutableLong(Number value) {
+        this.value = value.longValue();
     }
 
     @Override
@@ -48,7 +48,8 @@ public class MutableLong extends Number implements Comparable<Long> {
     }
 
     @Override
-    protected Object clone() {
+    protected Object clone() throws CloneNotSupportedException {
+        super.clone();
         return new MutableLong(value);
     }
 

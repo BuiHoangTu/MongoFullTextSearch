@@ -35,6 +35,11 @@ public class WordCount implements Countable {
     }
 
     @Override
+    public Long getCount() {
+        return count;
+    }
+
+    @Override
     public int hashCode() {
         return this.word.hashCode();
     }

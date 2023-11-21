@@ -6,7 +6,7 @@ import org.example.databases.mongo.reposistories.TextWithAllWordCountRepo;
 import org.example.databases.mongo.templates.KeywordCountTemplate;
 import org.example.databases.mongo.templates.TextWithAllWordCountTemplate;
 import org.example.models.*;
-import org.example.utils.counter.StackCounter;
+import org.example.utils.counter.UniqueCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,17 +112,20 @@ public class OpenService {
 
         textWithAllWordCountRepo.insert(textsWithAllWordCount);
 
-        StackCounter<WordCount> extraWordCounter = new StackCounter<>(listWordCount);
+        UniqueCounter<String> extraWordCounter = new UniqueCounter<>(listWordCount.stream().collect(Collectors.toMap(WordCount::getWord, WordCount::getCount)));
 
         // count words
         for (var text : texts) {
             Set<String> uniqueWords = new HashSet<>(List.of(text.split(" ")));
 
             // same word in same document is counted only one
-            extraWordCounter.addAll(uniqueWords.stream().map(word -> new WordCount(null, word, 1)).toList());
+            uniqueWords.forEach(extraWordCounter::count);
         }
 
+        LOGGER_OPEN_SERVICE.info("New words count:");
+        LOGGER_OPEN_SERVICE.info(extraWordCounter.toString());
+
         // increase word count for every existing document
-        textWithAllWordCountTemplate.increaseWordCount(extraWordCounter.stream().collect(Collectors.toMap(WordCount::getWord, WordCount::getCount)));
+        textWithAllWordCountTemplate.increaseWordCount(extraWordCounter);
     }
 }

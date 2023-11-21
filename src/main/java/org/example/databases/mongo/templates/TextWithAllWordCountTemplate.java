@@ -24,7 +24,7 @@ public class TextWithAllWordCountTemplate {
         this.mongo = mongo;
     }
 
-    public void increaseWordCount(Map<String, Long> wordCountIncrement) {
+    public void increaseWordCount(Map<String, Number> wordCountIncrement) {
         MongoCollection<Document> collection = mongo.getCollection(mongo.getCollectionName(TextWithAllWordCount.class));
 
         wordCountIncrement.forEach((word, count) -> {
@@ -42,7 +42,7 @@ public class TextWithAllWordCountTemplate {
                 collection.updateMany(
                         // update all
                         Filters.empty(),
-                        Updates.addToSet("wordCounts", new WordCount(null, word, count))
+                        Updates.addToSet("wordCounts", new WordCount(null, word, count.longValue()))
                 );
             }
 
