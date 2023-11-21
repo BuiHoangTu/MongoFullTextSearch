@@ -1,7 +1,11 @@
-retrieve common words from db [v]
-    update hourly (the rate is determined later)
-each search request, remove common words before search [v]
-    perform `dis-remove common words` if cant find anything
-    perform regex if cant find anything
+### insert
+[ ] each push data, save new words (only counted as one) and update to db word count
 
-each push data, save new words (only counted as one) and update to db word count
+
+### search
+[v] retrieve common words from db, remove common words
+[ ]    if can't find the field, log error and don't perform reduce words
+[v] search
+[ ]    perform `dis-remove common words` if cant find anything
+[ ]    perform regex if cant find anything
+
