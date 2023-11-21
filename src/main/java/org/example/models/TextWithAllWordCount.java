@@ -16,5 +16,5 @@ public class TextWithAllWordCount {
     private String id;
     @TextIndexed()
     private String text;
-    private List<KeywordCount> keywordCounts;
+    private List<WordCount> wordCounts;
 }

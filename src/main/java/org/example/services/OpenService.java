@@ -35,7 +35,7 @@ public class OpenService {
         return paragraphRepo.searchFullText(keyText);
     }
 
-    public List<KeywordCount> searchCommonText() {
+    public List<WordCount> searchCommonText() {
         return template.getCommonWords();
     }
 
@@ -58,7 +58,7 @@ public class OpenService {
             LOGGER_OPEN_SERVICE.error("Database can't find keywordCounts, search reduce is going to be performed");
         } else {
             // get a count
-            var listWordCount = optionalTextWithAllWordCount.get().getKeywordCounts();
+            var listWordCount = optionalTextWithAllWordCount.get().getWordCounts();
 
             // reduce to list of common words
             List<String> commonWords = listWordCount
@@ -72,7 +72,7 @@ public class OpenService {
                     // only get most common words
                     .limit(((long) listWordCount.size() * COMMON_PERCENTAGE) / 100)
                     // map to a list string
-                    .map(KeywordCount::getWord)
+                    .map(WordCount::getWord)
                     .toList();
 
             // remove every words that is common
@@ -101,20 +101,20 @@ public class OpenService {
         // retrieve words count from db
         var listWordCount = textWithAllWordCountRepo.findFirstWithKeywordCount()
                 .orElse(new TextWithAllWordCount(null, null, Collections.emptyList()))
-                .getKeywordCounts();
+                .getWordCounts();
 
         // add to text before push db
         List<TextWithAllWordCount> textsWithAllWordCount = texts.stream().map(text -> new TextWithAllWordCount(null, text, listWordCount)).toList();
 
         textWithAllWordCountRepo.insert(textsWithAllWordCount);
 
-        StackCounter<KeywordCount> wordCounter = new StackCounter<>(listWordCount);
+        StackCounter<WordCount> wordCounter = new StackCounter<>(listWordCount);
         // count words
         for (var text : texts) {
             Set<String> uniqueWords = new HashSet<>(List.of(text.split(" ")));
 
             // same word in same document is counted only one
-            wordCounter.addAll(uniqueWords.stream().map(word -> new KeywordCount(null, word, 1)).toList());
+            wordCounter.addAll(uniqueWords.stream().map(word -> new WordCount(null, word, 1)).toList());
         }
     }
 }

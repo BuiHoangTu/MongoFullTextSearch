@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document(collection = "keywords_count")
 @AllArgsConstructor
-public class KeywordCount implements Countable {
+public class WordCount implements Countable {
     @Id
     private String id;
     private String word;
@@ -21,15 +21,15 @@ public class KeywordCount implements Countable {
     @Override
     public void stack(Object countable) {
         if (this.sameType(countable)) {
-            var keywordCount = (KeywordCount) countable;
+            var keywordCount = (WordCount) countable;
             this.count += keywordCount.getCount();
         }
     }
 
     @Override
     public boolean sameType(Object countable) {
-        if (countable instanceof KeywordCount keywordCount) {
-            return keywordCount.word.equals(this.word);
+        if (countable instanceof WordCount wordCount) {
+            return wordCount.word.equals(this.word);
         }
         return false;
     }

@@ -19,7 +19,7 @@ public interface TextWithAllWordCountRepo extends MongoRepository<TextWithAllWor
             "{ $match: " +
                 "{" +
                     // make sure this field exist
-                    "'keywordCounts': { " +
+                    "'wordCounts': { " +
                         "$exists: true," +
                         "$ne: null," +
                         "$not: {$size: 0}" +
@@ -43,7 +43,7 @@ public interface TextWithAllWordCountRepo extends MongoRepository<TextWithAllWor
     @Aggregation(pipeline = {
             "{ $match: {$text: {$search: '?0', $language: vi } } }",
             // this field is not necessary in this step
-            "{ $unset: 'keywordCounts'}",
+            "{ $unset: 'wordCounts'}",
             "{ $sort: { score: { $meta: 'textScore' } } }",
             "{ $limit: ?1 }"
     })

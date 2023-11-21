@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class CommonKeywords extends StackCounter<KeywordCount> {
+public class CommonKeywords extends StackCounter<WordCount> {
     private final KeywordCountTemplate keywordCountTemplate;
 
     @Autowired

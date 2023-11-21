@@ -1,6 +1,6 @@
 package org.example.controllers;
 
-import org.example.models.KeywordCount;
+import org.example.models.WordCount;
 import org.example.models.Paragraph;
 import org.example.models.Text;
 import org.example.models.TextWithAllWordCount;
@@ -35,7 +35,7 @@ public class OpenController {
     }
 
     @GetMapping(path = "common")
-    public ResponseEntity<List<KeywordCount>> searchKeyText() {
+    public ResponseEntity<List<WordCount>> searchKeyText() {
         return ResponseEntity.ok(service.searchCommonText());
     }
 
