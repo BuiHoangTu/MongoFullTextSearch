@@ -1,6 +1,7 @@
-package org.example.models;
+package org.example.configs;
 
 import org.example.databases.mongo.templates.KeywordCountTemplate;
+import org.example.models.WordCount;
 import org.example.utils.counter.StackCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
