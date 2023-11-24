@@ -36,8 +36,13 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
     }
 
     @Override
-    public Number get(Object key) {
+    public Number getCount(Object key) {
         return counterMap.get(key);
+    }
+
+    @Override
+    public Number get(Object key) {
+        return this.getCount(key);
     }
 
     @Override

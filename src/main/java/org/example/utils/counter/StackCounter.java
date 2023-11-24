@@ -42,7 +42,7 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     }
 
     @Override
-    public Number get(Object key) {
+    public Number getCount(Object key) {
         return counterMap.get(key).getCount();
     }
 

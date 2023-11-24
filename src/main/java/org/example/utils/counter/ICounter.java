@@ -21,5 +21,6 @@ public interface ICounter<T> {
         }
         return res;
     }
-    Number get(Object key);
+
+    Number getCount(Object key);
 }
