@@ -1,6 +1,7 @@
 package org.example.utils.counter;
 
 public interface ICounter<T> {
+    @SuppressWarnings("unused")
     Number count(T object);
 
     /**
@@ -23,5 +24,6 @@ public interface ICounter<T> {
         return res;
     }
 
+    @SuppressWarnings("unused")
     Number getCount(Object key);
 }

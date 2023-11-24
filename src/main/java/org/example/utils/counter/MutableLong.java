@@ -3,6 +3,7 @@ package org.example.utils.counter;
 public class MutableLong extends Number implements Comparable<Number> {
     private Long value;
 
+    @SuppressWarnings("unused")
     public MutableLong(Number value) {
         this.value = value.longValue();
     }
@@ -27,6 +28,7 @@ public class MutableLong extends Number implements Comparable<Number> {
         return value.doubleValue();
     }
 
+    @SuppressWarnings("unused")
     public MutableLong setValue(long value) {
         this.value = value;
         return this;

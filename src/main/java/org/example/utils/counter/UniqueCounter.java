@@ -5,6 +5,7 @@ import lombok.NonNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
     private final Map<T, MutableLong> counterMap;
 
@@ -12,6 +13,7 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
     public UniqueCounter() {
         this.counterMap = new HashMap<>();
     }
+    @SuppressWarnings("unused")
     public UniqueCounter(Map<T, Number> startupMap) {
         this.counterMap = new HashMap<>(startupMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> new MutableLong(entry.getValue()))));
     }

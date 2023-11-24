@@ -8,9 +8,11 @@ import java.util.*;
  * Count a stack of objects instead of singular objects
  * @param <T> type of object that is countable
  */
+@SuppressWarnings("unused")
 public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     private final Map<T, CountableWrapper<T>> counterMap = new HashMap<>();
 
+    @SuppressWarnings("unused")
     public StackCounter() {
     }
     @SuppressWarnings("unused")
