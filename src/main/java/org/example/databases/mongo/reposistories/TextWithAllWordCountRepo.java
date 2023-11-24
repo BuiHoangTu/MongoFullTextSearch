@@ -8,27 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TextWithAllWordCountRepo extends MongoRepository<TextWithAllWordCount, String> {
-    /**
-     * This method should be used to retrieve `keywordCounts` as it will find
-     * a document with not empty `keywordCounts` and `keywordCounts` are maintains
-     * across documents
-     *
-     * @return a document which contains `keywordCounts`
-     */
-    @Aggregation(pipeline = {
-            "{ $match: " +
-                "{" +
-                    // make sure this field exist
-                    "'wordCounts': { " +
-                        "$exists: true," +
-                        "$ne: null," +
-                        "$not: {$size: 0}" +
-                    " }" +
-                "} " +
-            "}",
-            "{ $limit: 1}"
-    })
-    Optional<TextWithAllWordCount> findFirstWithKeywordCount();
 
     /**
      * Perform a full-text search on document associate with TextWithAllWordCount.

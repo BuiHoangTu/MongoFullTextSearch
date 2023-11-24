@@ -60,15 +60,12 @@ public class OpenService {
 
         Set<TextWithAllWordCount> finalRes = new HashSet<>();
 
-        var optionalTextWithAllWordCount = textWithAllWordCountRepo.findFirstWithKeywordCount();
-        if (optionalTextWithAllWordCount.isEmpty()) {
+        var wordsCount = textWithAllWordCountTemplate.getWordsCount();
+        if (wordsCount.isEmpty()) {
             LOGGER_OPEN_SERVICE.error("Database can't find keywordCounts, search reduce is going to be performed");
         } else {
-            // get a count
-            var listWordCount = optionalTextWithAllWordCount.get().getWordCounts();
-
             // reduce to list of common words
-            List<String> commonWords = listWordCount
+            List<String> commonWords = wordsCount
                     // use c2 - c1 to get descending order
                     .stream().sorted((c1, c2) -> {
                         long lCpm = c2.getCount() - c1.getCount();
@@ -77,7 +74,7 @@ public class OpenService {
                         return 0;
                     })
                     // only get most common words
-                    .limit(((long) listWordCount.size() * COMMON_PERCENTAGE) / 100)
+                    .limit(((long) wordsCount.size() * COMMON_PERCENTAGE) / 100)
                     // map to a list string
                     .map(WordCount::getWord)
                     .toList();
@@ -118,9 +115,7 @@ public class OpenService {
 
     public void saveText(List<String> texts) {
         // retrieve words count from db
-        var listWordCount = textWithAllWordCountRepo.findFirstWithKeywordCount()
-                .orElse(new TextWithAllWordCount(null, null, Collections.emptyList()))
-                .getWordCounts();
+        var listWordCount = textWithAllWordCountTemplate.getWordsCount();
 
         // add to text before push db
         List<TextWithAllWordCount> textsWithAllWordCount = texts.stream().map(text -> new TextWithAllWordCount(null, text, listWordCount)).toList();
@@ -132,7 +127,7 @@ public class OpenService {
 
         // count words
         for (var text : texts) {
-            // put all imto set to get unique strings
+            // put all into set to get unique strings
             Set<String> uniqueWords = new HashSet<>(List.of(text.split(" ")));
 
             // same word in same document is counted only one

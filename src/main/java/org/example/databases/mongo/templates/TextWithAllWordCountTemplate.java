@@ -10,23 +10,48 @@ import org.example.models.TextWithAllWordCount;
 import org.example.models.WordCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class TextWithAllWordCountTemplate {
     private final MongoTemplate mongo;
+    private final MongoCollection<Document> collection;
+    private final Class<TextWithAllWordCount> rootClass = TextWithAllWordCount.class;
 
     @Autowired
     public TextWithAllWordCountTemplate(MongoTemplate mongo) {
         this.mongo = mongo;
+        this.collection = mongo.getCollection(mongo.getCollectionName(this.rootClass));
+    }
+
+    public List<WordCount> getWordsCount() {
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("wordCounts")
+                // field exist
+                .exists(true)
+                // field is not null
+                .ne(null)
+                // field is array
+                .type(JsonSchemaObject.Type.ARRAY)
+                // size != 0
+                .not().size(0)
+        );
+
+        var res = mongo.findOne(query, this.rootClass);
+
+        if (res != null) return res.getWordCounts();
+        else return Collections.emptyList();
     }
 
     public void increaseWordCount(Map<String, Number> wordCountIncrement) {
-        MongoCollection<Document> collection = mongo.getCollection(mongo.getCollectionName(TextWithAllWordCount.class));
-
         wordCountIncrement.forEach((word, count) -> {
             UpdateResult res = collection.updateMany(
                     // document has field wordCounts, in which word = input
