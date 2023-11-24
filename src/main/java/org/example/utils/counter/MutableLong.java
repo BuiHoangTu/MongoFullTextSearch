@@ -1,10 +1,11 @@
 package org.example.utils.counter;
 
-public class MutableLong extends Number implements Comparable<Long> {
+public class MutableLong extends Number implements Comparable<Number> {
     private Long value;
 
-    public MutableLong(Long value) {
-        this.value = value;
+    @SuppressWarnings("unused")
+    public MutableLong(Number value) {
+        this.value = value.longValue();
     }
 
     @Override
@@ -27,14 +28,15 @@ public class MutableLong extends Number implements Comparable<Long> {
         return value.doubleValue();
     }
 
+    @SuppressWarnings("unused")
     public MutableLong setValue(long value) {
         this.value = value;
         return this;
     }
 
     @Override
-    public int compareTo(Long o) {
-        return value.compareTo(o);
+    public int compareTo(Number o) {
+        return value.compareTo(o.longValue());
     }
 
     @Override
@@ -48,12 +50,13 @@ public class MutableLong extends Number implements Comparable<Long> {
     }
 
     @Override
-    protected Object clone() {
+    protected Object clone() throws CloneNotSupportedException {
+        super.clone();
         return new MutableLong(value);
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        return String.valueOf(value);
     }
 }

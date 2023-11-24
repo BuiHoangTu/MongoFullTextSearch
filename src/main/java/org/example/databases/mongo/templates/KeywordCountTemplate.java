@@ -1,6 +1,6 @@
 package org.example.databases.mongo.templates;
 
-import org.example.models.KeywordCount;
+import org.example.models.WordCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,7 +14,6 @@ import java.util.List;
 @Repository
 public class KeywordCountTemplate {
     private static final int COMMON_PERCENTAGE = 50;
-    private static final String COLLECTION = "keywords_count";
 
     private final MongoTemplate mongo;
 
@@ -23,8 +22,8 @@ public class KeywordCountTemplate {
         this.mongo = mongo;
     }
 
-    public List<KeywordCount> getCommonWords() {
-        long total = mongo.count(new Query(), KeywordCount.class);
+    public List<WordCount> getCommonWords() {
+        long total = mongo.count(new Query(), WordCount.class);
 
         long commonQuantity = total * COMMON_PERCENTAGE / 100;
 
@@ -33,7 +32,10 @@ public class KeywordCountTemplate {
                 Aggregation.limit(commonQuantity)
         );
 
-        AggregationResults<KeywordCount> res = mongo.aggregate(aggregation, COLLECTION, KeywordCount.class);
+        AggregationResults<WordCount> res = mongo.aggregate(
+                aggregation,
+                mongo.getCollectionName(WordCount.class),
+                WordCount.class);
 
         return res.getMappedResults();
     }

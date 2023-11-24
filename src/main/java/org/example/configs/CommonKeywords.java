@@ -1,12 +1,13 @@
-package org.example.models;
+package org.example.configs;
 
 import org.example.databases.mongo.templates.KeywordCountTemplate;
+import org.example.models.WordCount;
 import org.example.utils.counter.StackCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class CommonKeywords extends StackCounter<KeywordCount> {
+public class CommonKeywords extends StackCounter<WordCount> {
     private final KeywordCountTemplate keywordCountTemplate;
 
     @Autowired

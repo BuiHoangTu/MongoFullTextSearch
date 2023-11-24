@@ -1,10 +1,27 @@
 package org.example.utils.counter;
 
+import lombok.NonNull;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
-    private final Map<T, MutableLong> counterMap = new HashMap<>();
+    private final Map<T, MutableLong> counterMap;
+
+    @SuppressWarnings("unused")
+    public UniqueCounter() {
+        this.counterMap = new HashMap<>();
+    }
+    @SuppressWarnings("unused")
+    public UniqueCounter(Map<T, Number> startupMap) {
+        this.counterMap = new HashMap<>(startupMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> new MutableLong(entry.getValue()))));
+    }
+    @SuppressWarnings("unused")
+    public UniqueCounter(Collection<T> startupElements) {
+        this.counterMap = new HashMap<>();
+        startupElements.forEach(this::count);
+    }
 
     /**
      * Put the object in the Counter. If the counter previously contained
@@ -12,13 +29,24 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
      * @param object object which need counting its appearance
      * @return total times this object appeared including this time
      */
+    @Override
     public Number count(T object) {
         return this.put(object, 1);
     }
 
     @Override
-    public Number get(Object key) {
+    public Number repeatCount(T object, int time) throws IllegalArgumentException {
+        return this.put(object, time);
+    }
+
+    @Override
+    public Number getCount(Object key) {
         return counterMap.get(key);
+    }
+
+    @Override
+    public Number get(Object key) {
+        return this.getCount(key);
     }
 
     @Override
@@ -80,16 +108,19 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
     }
 
     @Override
+    @NonNull
     public Set<T> keySet() {
         return counterMap.keySet();
     }
 
     @Override
+    @NonNull
     public Collection< Number> values() {
         return new ArrayList<>(counterMap.values());
     }
 
     @Override
+    @NonNull
     public Set<Entry<T, Number>> entrySet() {
         return counterMap.entrySet().stream().map((mutableEntry) -> new Entry<T, Number>() {
             @Override
@@ -108,6 +139,7 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
             }
 
             @Override
+            @SuppressWarnings("all")
             public boolean equals(Object o) {
                 return mutableEntry.equals(o);
             }
@@ -117,5 +149,10 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
                 return mutableEntry.hashCode();
             }
         }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String toString() {
+        return counterMap.toString();
     }
 }
