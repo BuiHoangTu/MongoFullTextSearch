@@ -20,7 +20,7 @@ public interface TextWithAllWordCountRepo extends MongoRepository<TextWithAllWor
      * `findFirstWithKeywordCount`
      */
     @Aggregation(pipeline = {
-            "{ $match: {$text: {$search: '?0' } } }",
+            "{ $match: {$text: {$search: ?0 } } }",
             // this field is not necessary in this step
             "{ $unset: 'wordCounts'}",
             "{ $sort: { score: { $meta: 'textScore' } } }",

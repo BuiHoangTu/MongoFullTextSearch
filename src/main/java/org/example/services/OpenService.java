@@ -91,6 +91,9 @@ public class OpenService {
                         if (splitText.size() <= MINIMUM_SEARCH_KEY) break remove_common;
                     }
                 }
+
+                LOGGER_OPEN_SERVICE.info("filtered text:");
+                LOGGER_OPEN_SERVICE.info(splitText.toString());
             }
 
             // perform filtered search
