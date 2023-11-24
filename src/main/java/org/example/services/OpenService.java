@@ -127,10 +127,12 @@ public class OpenService {
 
         textWithAllWordCountRepo.insert(textsWithAllWordCount);
 
-        UniqueCounter<String> extraWordCounter = new UniqueCounter<>(listWordCount.stream().collect(Collectors.toMap(WordCount::getWord, WordCount::getCount)));
+        // empty word counter
+        UniqueCounter<String> extraWordCounter = new UniqueCounter<>();
 
         // count words
         for (var text : texts) {
+            // put all imto set to get unique strings
             Set<String> uniqueWords = new HashSet<>(List.of(text.split(" ")));
 
             // same word in same document is counted only one
