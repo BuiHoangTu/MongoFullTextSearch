@@ -46,16 +46,19 @@ public class OpenService {
     public List<Text> searchTextWithKeyword(String text) {
         // remove every words that is common
         List<String> splitText = new java.util.ArrayList<>(Arrays.stream(text.split(" ")).toList());
-        splitText.removeIf(word -> commonKeywords.get(word) != null);
+        splitText.removeIf(word -> commonKeywords.getCount(word) != null);
 
         // perform search
         return textRepo.searchFullText(String.join(" ", splitText));
     }
 
-    public List<TextWithAllWordCount> searchTextWithAllWordCount(String text) {
+    public Collection<TextWithAllWordCount> searchTextWithAllWordCount(String text) {
         final long COMMON_PERCENTAGE = 50;
         final long MINIMUM_SEARCH_KEY = 3;
         final long MAX_RESULT = 10;
+        final long MIN_RESULT = 5;
+
+        Set<TextWithAllWordCount> finalRes = new HashSet<>();
 
         var optionalTextWithAllWordCount = textWithAllWordCountRepo.findFirstWithKeywordCount();
         if (optionalTextWithAllWordCount.isEmpty()) {
@@ -68,9 +71,9 @@ public class OpenService {
             List<String> commonWords = listWordCount
                     // use c2 - c1 to get descending order
                     .stream().sorted((c1, c2) -> {
-                        long res = c2.getCount() - c1.getCount();
-                        if (res > 0) return 1;
-                        if (res < 0) return -1;
+                        long lCpm = c2.getCount() - c1.getCount();
+                        if (lCpm > 0) return 1;
+                        if (lCpm < 0) return -1;
                         return 0;
                     })
                     // only get most common words
@@ -93,12 +96,24 @@ public class OpenService {
                 }
             }
 
-            text = String.join(" ", splitText);
+            // perform filtered search
+            String filteredText = String.join(" ", splitText);
+            List<TextWithAllWordCount> filteredRes = textWithAllWordCountRepo.searchFullText(filteredText, MAX_RESULT);
+            finalRes.addAll(filteredRes);
+            if (finalRes.size() > MIN_RESULT) return finalRes;
         }
 
 
-        // perform search
-        return textWithAllWordCountRepo.searchFullText(text, MAX_RESULT);
+        // perform original search
+        var nonFilteredRes = textWithAllWordCountRepo.searchFullText(text, MAX_RESULT - finalRes.size());
+        finalRes.addAll(nonFilteredRes);
+        if (finalRes.size() > MIN_RESULT) return finalRes;
+
+        // perform regex
+        String regexText = "*" + text.replaceAll(" ", "* *") + "*";
+        var regexRes = textWithAllWordCountRepo.searchFullText(regexText, MAX_RESULT - finalRes.size());
+        finalRes.addAll(regexRes);
+        return finalRes;
     }
 
     public void saveText(List<String> texts) {

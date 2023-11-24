@@ -10,6 +10,6 @@
     - [x] if it can't find the field, log error
 - [x] search
     - [x] full-text search
-    - [ ] perform "un-remove common words" if cant find anything
-    - [ ] perform regex if cant find anything
+    - [x] perform "un-remove common words" if cant find anything
+    - [x] perform regex if cant find anything
 
