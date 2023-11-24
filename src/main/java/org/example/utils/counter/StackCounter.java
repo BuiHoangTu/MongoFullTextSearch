@@ -28,6 +28,20 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     }
 
     @Override
+    public Number repeatCount(T object, int time) throws IllegalArgumentException {
+        var currentValue = counterMap.get(object);
+        if (currentValue == null) { currentValue = object;}
+        else currentValue.stack(object);
+
+        for (int i = 0; i < time - 1; i ++) {
+            currentValue.stack(object);
+        }
+
+        counterMap.put(object, currentValue);
+        return currentValue.getCount();
+    }
+
+    @Override
     public Number get(Object key) {
         return counterMap.get(key).getCount();
     }

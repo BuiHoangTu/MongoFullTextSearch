@@ -25,8 +25,14 @@ public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
      * @param object object which need counting its appearance
      * @return total times this object appeared including this time
      */
+    @Override
     public Number count(T object) {
         return this.put(object, 1);
+    }
+
+    @Override
+    public Number repeatCount(T object, int time) throws IllegalArgumentException {
+        return this.put(object, time);
     }
 
     @Override
