@@ -20,18 +20,10 @@ public class WordCount implements Countable {
 
     @Override
     public void stack(Object countable) {
-        if (this.sameType(countable)) {
+        if (this.sameStackable(countable)) {
             var keywordCount = (WordCount) countable;
             this.count += keywordCount.getCount();
         }
-    }
-
-    @Override
-    public boolean sameType(Object countable) {
-        if (countable instanceof WordCount wordCount) {
-            return wordCount.word.equals(this.word);
-        }
-        return false;
     }
 
     @Override
@@ -40,13 +32,16 @@ public class WordCount implements Countable {
     }
 
     @Override
-    public int hashCode() {
-        return this.word.hashCode();
+    public boolean sameStackable(Object countable) {
+        if (countable instanceof WordCount wordCount) {
+            return wordCount.word.equals(this.word);
+        }
+        return false;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return sameType(obj);
+    public int hashStackable() {
+        return this.word.hashCode();
     }
 
 }

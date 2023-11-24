@@ -7,7 +7,7 @@ import java.util.*;
  * @param <T> type of object that is countable
  */
 public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
-    private final Map<T, Countable> counterMap = new HashMap<>();
+    private final Map<T, CountableWrapper<T>> counterMap = new HashMap<>();
 
     public StackCounter() {
     }
@@ -19,7 +19,7 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     public Number count(T object) {
         var currentValue = counterMap.get(object);
         if (currentValue == null) {
-            counterMap.put(object, object);
+            counterMap.put(object, new CountableWrapper<>(object));
             return object.getCount();
         } else {
             currentValue.stack(object);
@@ -29,7 +29,7 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     @Override
     public Number repeatCount(T object, int time) throws IllegalArgumentException {
-        var currentValue = counterMap.get(object);
+        var currentValue = counterMap.get(object).content;
         if (currentValue == null) { currentValue = object;}
         else currentValue.stack(object);
 
@@ -37,7 +37,7 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
             currentValue.stack(object);
         }
 
-        counterMap.put(object, currentValue);
+        counterMap.put(object, new CountableWrapper<>(currentValue));
         return currentValue.getCount();
     }
 
@@ -113,4 +113,27 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     public void clear() {
         counterMap.clear();
     }
+
+
+    private record CountableWrapper<C extends Countable>(C content) {
+        @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof StackCounter.CountableWrapper<?> that)) return false;
+                return this.content.sameStackable(that.content);
+            }
+
+            @Override
+            public int hashCode() {
+                return this.content.hashStackable();
+            }
+
+            public Number getCount() {
+                return content.getCount();
+            }
+
+            public void stack(Object countable) {
+                content.stack(countable);
+            }
+        }
 }

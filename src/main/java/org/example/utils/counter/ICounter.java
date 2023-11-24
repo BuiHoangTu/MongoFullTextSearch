@@ -10,7 +10,7 @@ public interface ICounter<T> {
      * @param time number of time that need repeating
      * @return last result of counting
      * @throws IllegalArgumentException if time <= 0
-     * @apiNote Implement this method if your counter perform more
+     * @implNote Implement this method if your counter perform more
      * optimization than a loop of n time
      */
     default Number repeatCount(T object, int time) throws IllegalArgumentException {

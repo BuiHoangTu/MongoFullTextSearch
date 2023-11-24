@@ -14,10 +14,20 @@ public interface Stackable {
 
     /**
      * Check if this can be merged with new object
-     * @implNote To be the same type, they must have the same hashCode()
-     * meaning: this.sameType(stackable) != true if this.hashCode() != stackable.hashCode()
+     * @implNote To be the sameStackable,
+     * they must have the same hashStackable() result.<br>
+     * Meaning: this.sameStackable(that) != true
+     * if this.hashStackable() != that.hashStackable()
      * @param countable new object
      * @return true if they can merge
      */
-    boolean sameType(Object countable);
+    boolean sameStackable(Object countable);
+
+    /**
+     * Help perform speed optimization in counter. <br>
+     * @implNote If this.sameStackable(that) == true
+     * then this.hashStackable() == that.hashStackable()
+     * @return a hash code represent type of stackable
+     */
+    int hashStackable();
 }
