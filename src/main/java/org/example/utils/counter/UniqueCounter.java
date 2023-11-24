@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 public class UniqueCounter<T> implements ICounter<T>, Map<T, Number>{
     private final Map<T, MutableLong> counterMap;
 
+    @SuppressWarnings("unused")
     public UniqueCounter() {
         this.counterMap = new HashMap<>();
     }
     public UniqueCounter(Map<T, Number> startupMap) {
         this.counterMap = new HashMap<>(startupMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> new MutableLong(entry.getValue()))));
     }
+    @SuppressWarnings("unused")
     public UniqueCounter(Collection<T> startupElements) {
         this.counterMap = new HashMap<>();
         startupElements.forEach(this::count);

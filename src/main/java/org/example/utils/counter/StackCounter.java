@@ -1,5 +1,7 @@
 package org.example.utils.counter;
 
+import com.mongodb.lang.NonNull;
+
 import java.util.*;
 
 /**
@@ -11,6 +13,7 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     public StackCounter() {
     }
+    @SuppressWarnings("unused")
     public StackCounter(Collection<T> startupCollection) {
         startupCollection.forEach(this::count);
     }
@@ -62,17 +65,20 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     }
 
     @Override
+    @NonNull
     public Iterator<T> iterator() {
         return counterMap.keySet().iterator();
     }
 
     @Override
+    @NonNull
     public Object[] toArray() {
         return counterMap.keySet().toArray();
     }
 
     @Override
-    public <T1> T1[] toArray(T1[] a) {
+    @NonNull
+    public <T1> T1[] toArray(@NonNull T1[] a) {
         return counterMap.keySet().toArray(a);
     }
 
@@ -89,18 +95,18 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(@NonNull Collection<?> c) {
         return counterMap.keySet().containsAll(c);
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        c.stream().map(this::count);
+        c.forEach(this::count);
         return true;
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(@NonNull Collection<?> c) {
         return false;
     }
 

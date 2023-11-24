@@ -13,6 +13,7 @@ public interface ICounter<T> {
      * @implNote Implement this method if your counter perform more
      * optimization than a loop of n time
      */
+    @SuppressWarnings("unused")
     default Number repeatCount(T object, int time) throws IllegalArgumentException {
         if (time <= 0) throw new IllegalArgumentException("The time of repeat can't not be smaller or equal to 0");
         Number res = null;
