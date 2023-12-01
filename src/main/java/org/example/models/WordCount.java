@@ -6,10 +6,8 @@ import org.example.utils.counter.Countable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "keywords_count")
 @AllArgsConstructor
 public class WordCount implements Countable {
     @Id

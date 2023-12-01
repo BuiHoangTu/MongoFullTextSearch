@@ -1,12 +1,9 @@
 package org.example.services;
 
-import org.example.configs.CommonKeywords;
-import org.example.databases.mongo.reposistories.ParagraphRepo;
-import org.example.databases.mongo.reposistories.TextRepo;
 import org.example.databases.mongo.reposistories.TextWithAllWordCountRepo;
-import org.example.databases.mongo.templates.KeywordCountTemplate;
 import org.example.databases.mongo.templates.TextWithAllWordCountTemplate;
-import org.example.models.*;
+import org.example.models.TextWithAllWordCount;
+import org.example.models.WordCount;
 import org.example.utils.counter.UniqueCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,38 +15,13 @@ import java.util.*;
 @Service
 public class OpenService {
     private static final Logger LOGGER_OPEN_SERVICE = LoggerFactory.getLogger(OpenService.class);
-    private final ParagraphRepo paragraphRepo;
-    private final KeywordCountTemplate keywordCountTemplate;
-    private final CommonKeywords commonKeywords;
-    private final TextRepo textRepo;
     private final TextWithAllWordCountRepo textWithAllWordCountRepo;
     private final TextWithAllWordCountTemplate textWithAllWordCountTemplate;
 
     @Autowired
-    public OpenService(ParagraphRepo paragraphRepo, KeywordCountTemplate keywordCountTemplate, CommonKeywords commonKeywords, TextRepo textRepo, TextWithAllWordCountRepo textWithAllWordCountRepo, TextWithAllWordCountTemplate textWithAllWordCountTemplate) {
-        this.paragraphRepo = paragraphRepo;
-        this.keywordCountTemplate = keywordCountTemplate;
-        this.commonKeywords = commonKeywords;
-        this.textRepo = textRepo;
+    public OpenService(TextWithAllWordCountRepo textWithAllWordCountRepo, TextWithAllWordCountTemplate textWithAllWordCountTemplate) {
         this.textWithAllWordCountRepo = textWithAllWordCountRepo;
         this.textWithAllWordCountTemplate = textWithAllWordCountTemplate;
-    }
-
-    public List<Paragraph> searchKeyText(String keyText) {
-        return paragraphRepo.searchFullText(keyText);
-    }
-
-    public List<WordCount> searchCommonText() {
-        return keywordCountTemplate.getCommonWords();
-    }
-
-    public List<Text> searchTextWithKeyword(String text) {
-        // remove every words that is common
-        List<String> splitText = new java.util.ArrayList<>(Arrays.stream(text.split(" ")).toList());
-        splitText.removeIf(word -> commonKeywords.getCount(word) != null);
-
-        // perform search
-        return textRepo.searchFullText(String.join(" ", splitText));
     }
 
     public Collection<TextWithAllWordCount> searchTextWithAllWordCount(String text) {
