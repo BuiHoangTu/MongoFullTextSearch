@@ -10,7 +10,7 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
-    private final Map<T, CountableWrapper<T>> counterMap = new HashMap<>();
+    private final Map<CountableWrapper<T>, T> counterMap = new HashMap<>();
 
     @SuppressWarnings("unused")
     public StackCounter() {
@@ -22,9 +22,11 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     @Override
     public Number count(T object) {
-        var currentValue = counterMap.get(object);
+        T clone = (T) object.clone();
+        var wrapped = new CountableWrapper<>(clone);
+        var currentValue = counterMap.get(wrapped);
         if (currentValue == null) {
-            counterMap.put(object, new CountableWrapper<>(object));
+            counterMap.put(wrapped, clone);
             return object.getCount();
         } else {
             currentValue.stack(object);
@@ -34,21 +36,29 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     @Override
     public Number repeatCount(T object, int time) throws IllegalArgumentException {
-        var currentValue = counterMap.get(object).content;
-        if (currentValue == null) { currentValue = object;}
+        var currentValue = counterMap.get(new CountableWrapper<>(object));
+        if (currentValue == null) {
+            currentValue = (T) object.clone();
+            this.counterMap.put(new CountableWrapper<>(currentValue), currentValue);
+        }
         else currentValue.stack(object);
 
+        // previous has consumed 1 count
         for (int i = 0; i < time - 1; i ++) {
             currentValue.stack(object);
         }
 
-        counterMap.put(object, new CountableWrapper<>(currentValue));
         return currentValue.getCount();
     }
 
     @Override
     public Number getCount(Object key) {
-        return counterMap.get(key).getCount();
+        try {
+            var cKey = (T) key;
+            return counterMap.get(new CountableWrapper<>(cKey)).getCount();
+        } catch (ClassCastException e) {
+            return null;
+        }
     }
 
     @Override
@@ -63,25 +73,29 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     @Override
     public boolean contains(Object o) {
-        return counterMap.containsKey(o);
+        try {
+            return counterMap.containsKey(new CountableWrapper<>((T) o));
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     @Override
     @NonNull
     public Iterator<T> iterator() {
-        return counterMap.keySet().iterator();
+        return counterMap.values().iterator();
     }
 
     @Override
     @NonNull
     public Object[] toArray() {
-        return counterMap.keySet().toArray();
+        return counterMap.values().toArray();
     }
 
     @Override
     @NonNull
     public <T1> T1[] toArray(@NonNull T1[] a) {
-        return counterMap.keySet().toArray(a);
+        return counterMap.values().toArray(a);
     }
 
     @Override
@@ -92,13 +106,22 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     @Override
     public boolean remove(Object o) {
-        var c = counterMap.remove(o);
-        return c != null; // if there is this object in the counter
+        try {
+            var c = counterMap.remove(new CountableWrapper<>(((T) o)));
+            return c != null; // if there is this object in the counter}
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     @Override
     public boolean containsAll(@NonNull Collection<?> c) {
-        return counterMap.keySet().containsAll(c);
+        try {
+            var keys = c.stream().map(elem -> (T) elem).map(CountableWrapper::new).toList();
+            return counterMap.keySet().containsAll(keys);
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     @Override
@@ -109,7 +132,18 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
 
     @Override
     public boolean retainAll(@NonNull Collection<?> c) {
-        return false;
+        var res = c.stream()
+                .map(elem -> {
+                    try {
+                        return (T) elem;
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                })
+                .map(CountableWrapper::new)
+                .toList();
+
+        return this.counterMap.keySet().retainAll(res);
     }
 
     @Override
@@ -143,5 +177,5 @@ public class StackCounter<T extends Countable> implements ICounter<T>, Set<T> {
             public void stack(Object countable) {
                 content.stack(countable);
             }
-        }
+    }
 }

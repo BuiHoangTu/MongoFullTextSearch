@@ -30,6 +30,16 @@ public class WordCount implements Countable {
     }
 
     @Override
+    public WordCount clone() {
+        try {
+            // dont have any mutable objects
+            return (WordCount) super.clone();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public boolean sameStackable(Object countable) {
         if (countable instanceof WordCount wordCount) {
             return wordCount.word.equals(this.word);
